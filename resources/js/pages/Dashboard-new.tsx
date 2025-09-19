@@ -119,14 +119,14 @@ const AdminDashboard: React.FC = () => {
   };
 
   const sidebarItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'courses', label: 'Courses', icon: BookOpen },
-    { id: 'students', label: 'Students', icon: Users },
-    { id: 'instructors', label: 'Instructors', icon: GraduationCap },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'assignments', label: 'Assignments', icon: FileText },
-    { id: 'certificates', label: 'Certificates', icon: Award },
-    { id: 'settings', label: 'Settings', icon: Settings }
+  { id: 'dashboard', label: 'Dashboard', icon: Home, route: '/dashboard' },
+  { id: 'courses', label: 'Courses', icon: BookOpen, route: '/courses' },
+  { id: 'students', label: 'Students', icon: Users, route: '/students' },
+  { id: 'instructors', label: 'Instructors', icon: GraduationCap, route: '/instructors' },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3, route: '/analytics' },
+  { id: 'assignments', label: 'Assignments', icon: FileText, route: '/assignments' },
+  { id: 'certificates', label: 'Certificates', icon: Award, route: '/certificates' },
+  { id: 'settings', label: 'Settings', icon: Settings, route: '/settings' }
   ];
 
   const StatCard: React.FC<{
@@ -166,13 +166,13 @@ const AdminDashboard: React.FC = () => {
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
-          <div className="w-16 bg-gray-200 rounded-full h-2 mr-2">
+          <div className="w-full bg-gray-200 rounded-full h-2 mr-2">
             <div 
               className="bg-blue-600 h-2 rounded-full" 
               style={{ width: `${course.completion}%` }}
             ></div>
           </div>
-          <span className="text-sm text-gray-900">{course.completion}%</span>
+          <span className="text-sm text-gray-900 min-w-max">{course.completion}%</span>
         </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -185,14 +185,14 @@ const AdminDashboard: React.FC = () => {
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <div className="flex items-center space-x-2">
-          <button className="text-blue-600 hover:text-blue-900">
+        <div className="flex items-center justify-end space-x-2">
+          <button className="text-gray-400 hover:text-blue-600 p-1 rounded-full transition-colors">
             <Eye className="w-4 h-4" />
           </button>
-          <button className="text-gray-600 hover:text-gray-900">
+          <button className="text-gray-400 hover:text-gray-900 p-1 rounded-full transition-colors">
             <Edit className="w-4 h-4" />
           </button>
-          <button className="text-red-600 hover:text-red-900">
+          <button className="text-gray-400 hover:text-red-600 p-1 rounded-full transition-colors">
             <Trash2 className="w-4 h-4" />
           </button>
         </div>
@@ -201,17 +201,17 @@ const AdminDashboard: React.FC = () => {
   );
 
   const StudentRow: React.FC<{ student: DashboardData['recentStudents'][0] }> = ({ student }) => (
-    <div className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-lg transition-colors">
+    <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg transition-colors">
       <div className="flex items-center space-x-3">
-        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-medium text-blue-600">{student.avatar}</span>
         </div>
         <div>
           <p className="text-sm font-medium text-gray-900">{student.name}</p>
-          <p className="text-sm text-gray-500">{student.email}</p>
+          <p className="text-sm text-gray-500 truncate">{student.email}</p>
         </div>
       </div>
-      <div className="text-right">
+      <div className="text-right flex-shrink-0 ml-2">
         <p className="text-sm text-gray-900">{student.enrolledCourses} courses</p>
         <p className="text-sm text-gray-500">{student.lastActive}</p>
       </div>
@@ -219,14 +219,14 @@ const AdminDashboard: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gray-50 text-gray-800">
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0`}>
+      } transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 flex flex-col`}>
         
         {/* Logo */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center space-x-2">
             <GraduationCap className="w-8 h-8 text-blue-600" />
             <span className="text-xl font-bold text-gray-900">LMS Admin</span>
@@ -238,33 +238,34 @@ const AdminDashboard: React.FC = () => {
             <X className="w-6 h-6 text-gray-600" />
           </button>
         </div>
-
+        
         {/* Navigation */}
-        <nav className="mt-6 px-3">
+        <nav className="mt-6 px-3 flex-1 overflow-y-auto">
           {sidebarItems.map((item) => {
             const Icon = item.icon;
             return (
-              <button
+              <a
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center px-3 py-2 mb-1 text-sm font-medium rounded-lg transition-colors ${
-                  activeTab === item.id 
+                href={item.route}
+                className={`w-full flex items-center px-3 py-2.5 mb-1 text-sm font-medium rounded-lg transition-colors ${
+                  window.location.pathname === item.route
                     ? 'bg-blue-50 text-blue-600' 
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
+                style={{ textDecoration: 'none' }}
               >
                 <Icon className="w-5 h-5 mr-3" />
                 {item.label}
-              </button>
+              </a>
             );
           })}
         </nav>
       </div>
 
       {/* Main Content */}
-      <div className="lg:ml-64">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-white shadow-sm border-b border-gray-200 z-30">
           <div className="flex items-center justify-between h-16 px-6">
             <div className="flex items-center space-x-4">
               <button 
@@ -274,43 +275,48 @@ const AdminDashboard: React.FC = () => {
                 <Menu className="w-6 h-6 text-gray-600" />
               </button>
               
-              <div className="relative">
+              <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search..."
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 />
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">
+              <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full">
                 <Bell className="w-5 h-5" />
               </button>
               
               <div className="relative">
                 <button 
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+                  className="flex items-center space-x-2"
                 >
-                  <User className="w-5 h-5" />
-                  <span className="text-sm font-medium">Admin User</span>
-                  <ChevronDown className="w-4 h-4" />
+                  <div className="w-9 h-9 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-medium text-purple-600">AU</span>
+                  </div>
+                  <div className="hidden md:block text-left">
+                    <span className="text-sm font-medium block">Admin User</span>
+                    <span className="text-xs text-gray-500">Super Admin</span>
+                  </div>
+                  <ChevronDown className="w-4 h-4 text-gray-500 hidden md:block" />
                 </button>
                 
                 {userMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                    <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       <User className="w-4 h-4 mr-2" />
                       Profile
                     </a>
-                    <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       <Settings className="w-4 h-4 mr-2" />
                       Settings
                     </a>
-                    <hr className="my-1" />
-                    <a href="#" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                    <hr className="my-1 border-gray-200" />
+                    <a href="" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                       <LogOut className="w-4 h-4 mr-2" />
                       Logout
                     </a>
@@ -322,22 +328,22 @@ const AdminDashboard: React.FC = () => {
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="flex-1 overflow-y-auto p-6">
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Page Header */}
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                  <p className="text-gray-600">Welcome back! Here's what's happening with your LMS.</p>
+                  <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your LMS.</p>
                 </div>
-                <div className="flex items-center space-x-3">
-                  <button className="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    <Download className="w-4 h-4 mr-2 inline" />
+                <div className="flex items-center space-x-3 mt-4 md:mt-0">
+                  <button className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <Download className="w-4 h-4 mr-2" />
                     Export
                   </button>
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    <Plus className="w-4 h-4 mr-2 inline" />
+                  <button className="flex items-center px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <Plus className="w-4 h-4 mr-2" />
                     Add Course
                   </button>
                 </div>
@@ -383,10 +389,10 @@ const AdminDashboard: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <h2 className="text-lg font-semibold text-gray-900">Recent Courses</h2>
                       <div className="flex items-center space-x-2">
-                        <button className="p-2 text-gray-400 hover:text-gray-600">
+                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-full">
                           <Filter className="w-4 h-4" />
                         </button>
-                        <button className="p-2 text-gray-400 hover:text-gray-600">
+                        <button className="p-2 text-gray-400 hover:text-gray-600 rounded-full">
                           <MoreHorizontal className="w-4 h-4" />
                         </button>
                       </div>
@@ -409,7 +415,7 @@ const AdminDashboard: React.FC = () => {
                           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
                           </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Actions
                           </th>
                         </tr>
@@ -424,16 +430,16 @@ const AdminDashboard: React.FC = () => {
                 </div>
 
                 {/* Recent Students */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col">
                   <div className="p-6 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-900">Recent Students</h2>
                   </div>
-                  <div className="p-6 space-y-4">
+                  <div className="p-4 space-y-2 flex-1">
                     {dashboardData.recentStudents.map((student) => (
                       <StudentRow key={student.id} student={student} />
                     ))}
                   </div>
-                  <div className="p-6 border-t border-gray-200">
+                  <div className="p-4 border-t border-gray-200">
                     <button className="w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium">
                       View all students
                     </button>
@@ -442,7 +448,6 @@ const AdminDashboard: React.FC = () => {
               </div>
             </div>
           )}
-
           {activeTab !== 'dashboard' && (
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
               <h2 className="text-xl font-semibold text-gray-900 mb-2">
